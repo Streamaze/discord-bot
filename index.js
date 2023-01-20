@@ -46,10 +46,12 @@ client.on("messageCreate", async (message) => {
         if (!message.member.permissions.has("ModerateMembers")) return;
 
         const prefix = "/clip";
-        if (message.content.indexOf(prefix) !== 0) return;
+        if (message.content.toLowerCase().indexOf(prefix) !== 0) return;
 
-        const msgContent = message.content.slice(prefix.length).trim();
-        // const command = args.shift().toLowerCase();
+        let msgContent = message.content.slice(prefix.length).trim();
+        if (msgContent.length === 0) {
+            msgContent = "Untitled";
+        }
 
         const res = await fetch(
             "https://api.streamaze.live/timestamp/discord-reply",
