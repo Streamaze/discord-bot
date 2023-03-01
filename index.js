@@ -43,7 +43,12 @@ client.on("messageCreate", async (message) => {
         if (message.author.bot) return;
 
         // check if member is Moderator permissions
-        if (!message.member.permissions.has("ModerateMembers")) return;
+        if (
+            !message.member.permissions.has("ModerateMembers") &&
+            !message.member.roles.cache.has("1066421968926154772")
+        ) {
+            return;
+        }
 
         const prefix = "/clip";
         if (message.content.toLowerCase().indexOf(prefix) !== 0) return;
