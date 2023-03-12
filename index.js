@@ -1,4 +1,4 @@
-const { REST, Routes } = require("discord.js");
+const { REST, Routes, ActivityType } = require("discord.js");
 const { Client, GatewayIntentBits } = require("discord.js");
 const fetch = require("node-fetch");
 
@@ -7,6 +7,8 @@ require("dotenv").config();
 const rest = new REST({ version: "10" }).setToken(
     process.env.DISCORD_BOT_TOKEN
 );
+
+const { checkTask, setClient } = require("./src/modules/LiveChecker");
 
 (async () => {
     try {
@@ -31,11 +33,22 @@ const client = new Client({
         GatewayIntentBits.MessageContent,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildEmojisAndStickers,
     ],
+    allowedMentions: {
+        parse: ["everyone"],
+    },
 });
+
+checkTask.start();
+setClient(client);
 
 client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}!`);
+    client.user.setStatus("online");
+    client.user.setActivity("Sam's stream", {
+        type: ActivityType.Watching,
+    });
 });
 
 client.on("messageCreate", async (message) => {
