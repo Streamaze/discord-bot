@@ -29,7 +29,7 @@ const isSamLive = async () => {
         isLive = true;
 
         checkTask.stop();
-        interval = 60;
+        interval = 59;
         checkTask.start();
 
         if (client) {
