@@ -50,7 +50,7 @@ const isSamLive = async () => {
             client.channels.cache
                 .get("835283858768396358")
                 .send(
-                    `@everyone Sam just went live! <:LIVE:432677353211297823>\nhttps://www.youtube.com/@sam/streams`
+                    `@everyone Sam just went live! <:LIVE:432677353211297823>\nhttps://www.youtube.com/@sam/live`
                 );
         }
 
