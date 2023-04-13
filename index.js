@@ -63,41 +63,62 @@ client.on("messageCreate", async (message) => {
             return;
         }
 
-        const prefix = "/clip";
-        if (message.content.toLowerCase().indexOf(prefix) !== 0) return;
-
-        let msgContent = message.content.slice(prefix.length).trim();
-        if (msgContent.length === 0) {
-            msgContent = "Untitled";
-        }
-
-        const res = await fetch(
-            "https://api.streamaze.live/timestamp/discord-reply",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    timestamp: new Date().toUTCString(),
-                    title: msgContent,
-                }),
+        let prefix = "/clip";
+        if (message.content.toLowerCase().indexOf(prefix) === 0) {
+            let msgContent = message.content.slice(prefix.length).trim();
+            if (msgContent.length === 0) {
+                msgContent = "Untitled";
             }
-        );
 
-        const json = await res.json();
-        if (json?.timestamp && json?.url) {
-            message.reply(
-                `Timestamp: ${json.timestamp}\nTitle: ${json.title}\nLink: ${json.url}`
+            const res = await fetch(
+                "https://api.streamaze.live/timestamp/discord-reply",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        timestamp: new Date().toUTCString(),
+                        title: msgContent,
+                    }),
+                }
             );
-        } else {
-            if (json?.message) {
-                message.reply(json.message);
+
+            const json = await res.json();
+            if (json?.timestamp && json?.url) {
+                message.reply(
+                    `Timestamp: ${json.timestamp}\nTitle: ${json.title}\nLink: ${json.url}`
+                );
             } else {
-                message.reply("Something went wrong!");
+                if (json?.message) {
+                    message.reply(json.message);
+                } else {
+                    message.reply("Something went wrong!");
+                }
+
+                console.error(json);
+            }
+        } else if (message.content.toLowerCase().indexOf("/ticker") === 0) {
+            prefix = "/ticker";
+            let msgContent = message.content.slice(prefix.length).trim();
+            if (msgContent.length === 0) {
+                msgContent = "";
             }
 
-            console.error(json);
+            const res = await fetch(
+                `https://api.lanyard.rest/v1/users/${process.env.LANYARD_USER_ID}/kv/ticker`,
+                {
+                    method: "PUT",
+                    body: msgContent,
+                    headers: {
+                        Authorization: process.env.LANYARD_API_KEY,
+                    },
+                }
+            );
+
+            if (res.status === 204) {
+                message.reply("Ticker updated!");
+            }
         }
     } catch (error) {
         console.error(error);
