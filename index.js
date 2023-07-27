@@ -117,7 +117,28 @@ client.on("messageCreate", async (message) => {
             );
 
             if (res.status === 204) {
-                message.reply("Ticker updated!");
+                message.reply("Done!");
+            }
+        } else if (message.content.toLowerCase().indexOf("/t") === 0) {
+            prefix = "/t";
+            let msgContent = message.content.slice(prefix.length).trim();
+            if (msgContent.length === 0) {
+                msgContent = "";
+            }
+
+            const res = await fetch(
+                `https://api.lanyard.rest/v1/users/${process.env.LANYARD_USER_ID}/kv/ticker`,
+                {
+                    method: "PUT",
+                    body: msgContent,
+                    headers: {
+                        Authorization: process.env.LANYARD_API_KEY,
+                    },
+                }
+            );
+
+            if (res.status === 204) {
+                message.reply("Done!");
             }
         }
     } catch (error) {
