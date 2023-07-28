@@ -55,10 +55,10 @@ client.on("messageCreate", async (message) => {
     try {
         if (message.author.bot) return;
 
-        // check if member is Moderator permissions
+        // check if member has permissions
         if (
-            !message.member.permissions.has("ModerateMembers") &&
-            !message.member.roles.cache.has("1066421968926154772")
+            !message.member.permissions.has("Administrator") &&
+            !message.member.roles.cache.has("1095878889756184637")
         ) {
             return;
         }
