@@ -1,6 +1,16 @@
-const { REST, Routes, ActivityType } = require("discord.js");
-const { Client, GatewayIntentBits } = require("discord.js");
+const {
+    REST,
+    Routes,
+    ActivityType,
+    Client,
+    GatewayIntentBits,
+} = require("discord.js");
 const fetch = require("node-fetch");
+const express = require("express");
+
+// ---------------------------------------
+// Initialize Discord Bot
+// ---------------------------------------
 
 require("dotenv").config();
 
@@ -148,3 +158,32 @@ client.on("messageCreate", async (message) => {
 });
 
 client.login(process.env.DISCORD_BOT_TOKEN);
+
+// ---------------------------------------
+// Initialize Express
+// ---------------------------------------
+const router = express.Router();
+
+router.post("/webhook/highlight/:channelId", (req, res) => {
+    const discordChannelId = req?.params?.channelId;
+    const body = req?.body;
+    try {
+        const message = body?.message;
+        if (message) {
+            client.channels.cache.get(discordChannelId).send(message);
+            res.sendStatus(200);
+        } else {
+            console.log("Empty message: ", body, " to: ", discordChannelId);
+        }
+    } catch (e) {
+        console.error(e);
+        res.sendStatus(500);
+    }
+});
+
+const app = express();
+app.use(express.json());
+app.use(router);
+app.listen(8000, () => {
+    console.log("Express server started on port 8000");
+});
