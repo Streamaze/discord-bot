@@ -81,7 +81,7 @@ client.on("messageCreate", async (message) => {
             }
 
             const res = await fetch(
-                "https://api.streamaze.live/timestamp/discord-reply",
+                `${process.env.STREAMAZE_API_URL}/timestamp/discord-reply`,
                 {
                     method: "POST",
                     headers: {
